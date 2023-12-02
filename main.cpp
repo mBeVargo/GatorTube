@@ -130,9 +130,9 @@ void mergeSort(vector<Node> &list, string type, long start, long end)
     }
 }
 
-void printArray(vector<Node> list)
+void printArray(vector<Node> list, long start, long end)
 {
-    for (int i = 0; i < list.size(); i++)
+    for (auto i = start; i < end; i++)
         cout << list[i].value << " ";
     cout << endl;
 }
@@ -167,18 +167,36 @@ int main()
 
                 if (sortInput == "1")
                 {
+                    vector<Node> copy = youtubers;
                     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-                    mergeSort(youtubers, "vids", 0, youtubers.size() - 1);
+                    mergeSort(copy, "vids", 0, youtubers.size() - 1);
                     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-                    printArray(youtubers);
-                    cout << "Time taken " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << endl << endl;
+                    while (true)
+                    {
+                        cout << "Please choose how many items you would like to see" << endl;
+                        cout << "1. All" << endl;
+                        cout << "2. 20" << endl;
+                        string amountInput;
+                        cin >> amountInput;
+                        if (amountInput == "1")
+                        {
+                            printArray(copy, 0, youtubers.size());
+                            break;
+                        } else if (amountInput == "2") {
+                            printArray(copy, 0, 20);
+                            break;
+                        } else {
+                            cout << "Sorry that does not seem to be one of the options. Please try again." << endl;
+                        }
+                    }
+                    cout << "Time taken " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << " microseconds" << endl << endl;
                     break;
                 } else if (sortInput == "2"){
 
                 } else if (sortInput == "3"){
                     break;
                 } else {
-                    cout << "Sorry that does not seem to be one of the options. Please try again.";
+                    cout << "Sorry that does not seem to be one of the options. Please try again." << endl;
                 }
             }
         } else if (typeInput == "2") {
@@ -194,18 +212,36 @@ int main()
 
                 if (sortInput == "1")
                 {
+                    vector<Node> copy = youtubers;
                     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-                    mergeSort(youtubers, "subs", 0, youtubers.size() - 1);
+                    mergeSort(copy, "subs", 0, youtubers.size() - 1);
                     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-                    printArray(youtubers);
-                    cout << "Time taken " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << endl << endl;
+                    while (true)
+                    {
+                        cout << "Please choose how many items you would like to see" << endl;
+                        cout << "1. All" << endl;
+                        cout << "2. 20" << endl;
+                        string amountInput;
+                        cin >> amountInput;
+                        if (amountInput == "1")
+                        {
+                            printArray(copy, 0, youtubers.size());
+                            break;
+                        } else if (amountInput == "2") {
+                            printArray(copy, 0, 20);
+                            break;
+                        } else {
+                            cout << "Sorry that does not seem to be one of the options. Please try again." << endl;
+                        }
+                    }
+                    cout << "Time taken " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << " microseconds" << endl << endl;
                     break;
                 } else if (sortInput == "2"){
 
                 } else if (sortInput == "3"){
                     break;
                 } else {
-                    cout << "Sorry that does not seem to be one of the options. Please try again.";
+                    cout << "Sorry that does not seem to be one of the options. Please try again." << endl;
                 }
             }
 
@@ -222,18 +258,36 @@ int main()
 
                 if (sortInput == "1")
                 {
+                    vector<Node> copy = youtubers;
                     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-                    mergeSort(youtubers, "date", 0, youtubers.size() - 1);
+                    mergeSort(copy, "date", 0, youtubers.size() - 1);
                     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-                    printArray(youtubers);
-                    cout << "Time taken " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << endl << endl;
+                    while (true)
+                    {
+                        cout << "Please choose how many items you would like to see" << endl;
+                        cout << "1. All" << endl;
+                        cout << "2. 20" << endl;
+                        string amountInput;
+                        cin >> amountInput;
+                        if (amountInput == "1")
+                        {
+                            printArray(copy, 0, youtubers.size());
+                            break;
+                        } else if (amountInput == "2") {
+                            printArray(copy, 0, 20);
+                            break;
+                        } else {
+                            cout << "Sorry that does not seem to be one of the options. Please try again." << endl;
+                        }
+                    }
+                    cout << "Time taken " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << " microseconds" << endl << endl;
                     break;
                 } else if (sortInput == "2"){
 
                 } else if (sortInput == "3"){
                     break;
                 } else {
-                    cout << "Sorry that does not seem to be one of the options. Please try again.";
+                    cout << "Sorry that does not seem to be one of the options. Please try again." << endl;
                 }
             }
 
