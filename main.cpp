@@ -9,15 +9,15 @@ bool compareDates(string one, string two)
 {
     int yearOne = stoi(one.substr(one.length() - 4, one.length()));
     int yearTwo = stoi(two.substr(two.length() - 4, two.length()));
-    int monthOne = stoi(one.substr(0, one.find('/')));
-    int monthTwo = stoi(two.substr(0, two.find('/')));
-    int dayOne = stoi(one.substr(one.find('/') + 1, one.length() + 5));
-    int dayTwo = stoi(two.substr(two.find('/') + 1, two.length() + 5));
-
+    
     if (yearOne == yearTwo)
     {
+        int monthOne = stoi(one.substr(0, one.find('/')));
+        int monthTwo = stoi(two.substr(0, two.find('/')));
         if (monthOne == monthTwo)
         {
+            int dayOne = stoi(one.substr(one.find('/') + 1, one.length() + 5));
+            int dayTwo = stoi(two.substr(two.find('/') + 1, two.length() + 5));
             if (dayOne >= dayTwo)
             {
                 return true;
@@ -151,7 +151,7 @@ void printArray(vector<Node> list, string type, long start, long end)
 int main()
 {
     vector<Node> youtubers;
-    youtubers.emplace_back("WatchMojo.com", 15757, 19169156, "1/25/2007");
+    youtubers.emplace_back("", 15757, 19169156, "1/25/2007");
     youtubers.emplace_back("DemiLovatoVEVO", 165, 12109565, "5/12/2009");
     youtubers.emplace_back("RomanAtwoodVlogs", 1561, 14990695, "8/12/2013");
     youtubers.emplace_back("Like Nastya", 226, 10476486, "1/14/2016");
@@ -161,7 +161,7 @@ int main()
         cout << "Choose which category we want to work through" << endl;
         cout << "1. Amount of Videos" << endl;
         cout << "2. Subscriber Count" << endl;
-        cout << "3. Date Started" << endl;
+        cout << "3. Date Joined" << endl;
         cout << "4. Exit Program" << endl;
         string typeInput;
         cin >> typeInput;
@@ -191,16 +191,18 @@ int main()
                         cin >> amountInput;
                         if (amountInput == "1")
                         {
+                            cout << endl << "<Amount of Videos - Merge Sort>" << endl;
                             printArray(copy, "vids", 0, youtubers.size());
                             break;
                         } else if (amountInput == "2") {
+                            cout << endl << "<Amount of Videos - Merge Sort>" << endl;
                             printArray(copy, "vids", 0, 20);
                             break;
                         } else {
                             cout << "Sorry that does not seem to be one of the options. Please try again." << endl;
                         }
                     }
-                    cout << "Time taken: " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << " microseconds" << endl << endl;
+                    cout << "Time taken: " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << " microseconds" << endl << endl << endl;
                     break;
                 } else if (sortInput == "2"){
 
@@ -236,16 +238,18 @@ int main()
                         cin >> amountInput;
                         if (amountInput == "1")
                         {
+                            cout << endl << "<Subscriber Count - Merge Sort>" << endl;
                             printArray(copy, "subs", 0, youtubers.size());
                             break;
                         } else if (amountInput == "2") {
+                            cout << endl << "Subscriber Count - Merge Sort" << endl;
                             printArray(copy, "subs", 0, 20);
                             break;
                         } else {
                             cout << "Sorry that does not seem to be one of the options. Please try again." << endl;
                         }
                     }
-                    cout << "Time taken: " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << " microseconds" << endl << endl;
+                    cout << "Time taken: " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << " microseconds" << endl << endl << endl;
                     break;
                 } else if (sortInput == "2"){
 
@@ -282,16 +286,18 @@ int main()
                         cin >> amountInput;
                         if (amountInput == "1")
                         {
+                            cout << endl << "<Date Joined - Merge Sort>" << endl;
                             printArray(copy, "date", 0, youtubers.size());
                             break;
                         } else if (amountInput == "2") {
+                            cout << endl << "<Date Joined - Merge Sort>" << endl;
                             printArray(copy, "date", 0, 20);
                             break;
                         } else {
                             cout << "Sorry that does not seem to be one of the options. Please try again." << endl;
                         }
                     }
-                    cout << "Time taken: " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << " microseconds" << endl << endl;
+                    cout << "Time taken: " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << " microseconds" << endl << endl << endl;
                     break;
                 } else if (sortInput == "2"){
 
