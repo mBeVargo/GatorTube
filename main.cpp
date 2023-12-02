@@ -130,10 +130,21 @@ void mergeSort(vector<Node> &list, string type, long start, long end)
     }
 }
 
-void printArray(vector<Node> list, long start, long end)
+void printArray(vector<Node> list, string type, long start, long end)
 {
-    for (auto i = start; i < end; i++)
-        cout << list[i].value << " ";
+
+    if (type == "vids")
+    {
+        for (auto i = start; i < end; i++)
+            cout << list[i].value << ": " << list[i].video << endl;
+    } else if (type == "subs") {
+        for (auto i = start; i < end; i++)
+            cout << list[i].value << ": " << list[i].subscriber << endl;
+    } else if (type == "date") {
+        for (auto i = start; i < end; i++)
+            cout << list[i].value << ": " << list[i].date << endl;
+    }
+
     cout << endl;
 }
 
@@ -180,16 +191,16 @@ int main()
                         cin >> amountInput;
                         if (amountInput == "1")
                         {
-                            printArray(copy, 0, youtubers.size());
+                            printArray(copy, "vids", 0, youtubers.size());
                             break;
                         } else if (amountInput == "2") {
-                            printArray(copy, 0, 20);
+                            printArray(copy, "vids", 0, 20);
                             break;
                         } else {
                             cout << "Sorry that does not seem to be one of the options. Please try again." << endl;
                         }
                     }
-                    cout << "Time taken " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << " microseconds" << endl << endl;
+                    cout << "Time taken: " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << " microseconds" << endl << endl;
                     break;
                 } else if (sortInput == "2"){
 
@@ -225,16 +236,16 @@ int main()
                         cin >> amountInput;
                         if (amountInput == "1")
                         {
-                            printArray(copy, 0, youtubers.size());
+                            printArray(copy, "subs", 0, youtubers.size());
                             break;
                         } else if (amountInput == "2") {
-                            printArray(copy, 0, 20);
+                            printArray(copy, "subs", 0, 20);
                             break;
                         } else {
                             cout << "Sorry that does not seem to be one of the options. Please try again." << endl;
                         }
                     }
-                    cout << "Time taken " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << " microseconds" << endl << endl;
+                    cout << "Time taken: " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << " microseconds" << endl << endl;
                     break;
                 } else if (sortInput == "2"){
 
@@ -271,16 +282,16 @@ int main()
                         cin >> amountInput;
                         if (amountInput == "1")
                         {
-                            printArray(copy, 0, youtubers.size());
+                            printArray(copy, "date", 0, youtubers.size());
                             break;
                         } else if (amountInput == "2") {
-                            printArray(copy, 0, 20);
+                            printArray(copy, "date", 0, 20);
                             break;
                         } else {
                             cout << "Sorry that does not seem to be one of the options. Please try again." << endl;
                         }
                     }
-                    cout << "Time taken " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << " microseconds" << endl << endl;
+                    cout << "Time taken: " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << " microseconds" << endl << endl;
                     break;
                 } else if (sortInput == "2"){
 
