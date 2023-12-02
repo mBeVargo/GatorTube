@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <chrono>
+#include <set>
 #include "Node.h"
 
 
@@ -9,7 +10,7 @@ bool compareDates(string one, string two)
 {
     int yearOne = stoi(one.substr(one.length() - 4, one.length()));
     int yearTwo = stoi(two.substr(two.length() - 4, two.length()));
-    
+
     if (yearOne == yearTwo)
     {
         int monthOne = stoi(one.substr(0, one.find('/')));
@@ -148,21 +149,86 @@ void printArray(vector<Node> list, string type, long start, long end)
     cout << endl;
 }
 
-int main()
+int partition(vector<Node> list, string type,int low,int high)
 {
-    vector<Node> youtubers;
-    youtubers.emplace_back("", 15757, 19169156, "1/25/2007");
-    youtubers.emplace_back("DemiLovatoVEVO", 165, 12109565, "5/12/2009");
-    youtubers.emplace_back("RomanAtwoodVlogs", 1561, 14990695, "8/12/2013");
-    youtubers.emplace_back("Like Nastya", 226, 10476486, "1/14/2016");
-    youtubers.emplace_back("Its JoJo Siwa", 405, 8146407, "2/1/2015");
-    while (true)
+
+
+    if (type == "vids"){
+        //Note that the pivot is chosen is high and the list isnt sorted yet
+        //choose the pivot
+        auto pivot = list[high].video;
+        int i=(low-1);
+
+        for(int j=low;j<=high;j++)
+        {
+            if(list[j].video <pivot)
+            {
+                i++;
+                swap(list[i],list[j]);
+            }
+        }
+        swap(list[i+1],list[high]);
+        return (i+1);
+    }
+
+    if (type == "subs"){
+        auto pivot = list[high].subscriber;
+        int i=(low-1);
+
+        for(int j=low;j<=high;j++)
+        {
+            if(list[j].subscriber <pivot)
+            {
+                i++;
+                swap(list[i],list[j]);
+            }
+        }
+        swap(list[i+1],list[high]);
+        return (i+1);
+    }
+
+    if(type == "date"){
+        auto pivot = list[high].date;
+        int i=(low-1);
+
+        //compareDates(list[j].data, pivot) != true ;
+        for(int j=low; compareDates(list[j].date, pivot) != true ;j++)
+        {
+            if(compareDates(list[j].date, pivot))
+            {
+                i++;
+                swap(list[i],list[j]);
+            }
+        }
+        swap(list[i+1],list[high]);
+        return (i+1);
+    }
+
+
+}
+
+void quickSort(vector<Node> &list, string type, int low,int high)
+{
+
+    if(low<high)
+    {
+        int pivot = partition(list, type ,low,high);
+        //pivot left
+        quickSort(list, type,low,pivot-1);
+        //pivot right
+        quickSort(list, type ,pivot+1,high);
+    }
+}
+
+void category(vector<Node> copy)
+{
+    while(true)
     {
         cout << "Choose which category we want to work through" << endl;
         cout << "1. Amount of Videos" << endl;
         cout << "2. Subscriber Count" << endl;
         cout << "3. Date Joined" << endl;
-        cout << "4. Exit Program" << endl;
+        cout << "4. Back" << endl;
         string typeInput;
         cin >> typeInput;
         if (typeInput == "1")
@@ -178,9 +244,8 @@ int main()
 
                 if (sortInput == "1")
                 {
-                    vector<Node> copy = youtubers;
                     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-                    mergeSort(copy, "vids", 0, youtubers.size() - 1);
+                    mergeSort(copy, "vids", 0, copy.size() - 1);
                     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
                     while (true)
                     {
@@ -192,7 +257,7 @@ int main()
                         if (amountInput == "1")
                         {
                             cout << endl << "<Amount of Videos - Merge Sort>" << endl;
-                            printArray(copy, "vids", 0, youtubers.size());
+                            printArray(copy, "vids", 0, copy.size());
                             break;
                         } else if (amountInput == "2") {
                             cout << endl << "<Amount of Videos - Merge Sort>" << endl;
@@ -205,7 +270,31 @@ int main()
                     cout << "Time taken: " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << " microseconds" << endl << endl << endl;
                     break;
                 } else if (sortInput == "2"){
-
+                    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+                    quickSort(copy, "vids", 0, copy.size() - 1);
+                    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+                    while (true)
+                    {
+                        cout << "Please choose how many items you would like to see" << endl;
+                        cout << "1. All" << endl;
+                        cout << "2. 20" << endl;
+                        string amountInput;
+                        cin >> amountInput;
+                        if (amountInput == "1")
+                        {
+                            cout << endl << "<Amount of Videos - Quick Sort>" << endl;
+                            printArray(copy, "vids", 0, copy.size());
+                            break;
+                        } else if (amountInput == "2") {
+                            cout << endl << "<Amount of Videos - Quick Sort>" << endl;
+                            printArray(copy, "vids", 0, 20);
+                            break;
+                        } else {
+                            cout << "Sorry that does not seem to be one of the options. Please try again." << endl;
+                        }
+                    }
+                    cout << "Time taken: " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << " microseconds" << endl << endl << endl;
+                    break;
                 } else if (sortInput == "3"){
                     break;
                 } else {
@@ -225,9 +314,8 @@ int main()
 
                 if (sortInput == "1")
                 {
-                    vector<Node> copy = youtubers;
                     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-                    mergeSort(copy, "subs", 0, youtubers.size() - 1);
+                    mergeSort(copy, "subs", 0, copy.size() - 1);
                     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
                     while (true)
                     {
@@ -239,7 +327,7 @@ int main()
                         if (amountInput == "1")
                         {
                             cout << endl << "<Subscriber Count - Merge Sort>" << endl;
-                            printArray(copy, "subs", 0, youtubers.size());
+                            printArray(copy, "subs", 0, copy.size());
                             break;
                         } else if (amountInput == "2") {
                             cout << endl << "Subscriber Count - Merge Sort" << endl;
@@ -252,7 +340,31 @@ int main()
                     cout << "Time taken: " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << " microseconds" << endl << endl << endl;
                     break;
                 } else if (sortInput == "2"){
-
+                    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+                    quickSort(copy, "subs", 0, copy.size() - 1);
+                    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+                    while (true)
+                    {
+                        cout << "Please choose how many items you would like to see" << endl;
+                        cout << "1. All" << endl;
+                        cout << "2. 20" << endl;
+                        string amountInput;
+                        cin >> amountInput;
+                        if (amountInput == "1")
+                        {
+                            cout << endl << "<Subscriber Count - Quick Sort>" << endl;
+                            printArray(copy, "subs", 0, copy.size());
+                            break;
+                        } else if (amountInput == "2") {
+                            cout << endl << "Subscriber Count - Quick Sort" << endl;
+                            printArray(copy, "subs", 0, 20);
+                            break;
+                        } else {
+                            cout << "Sorry that does not seem to be one of the options. Please try again." << endl;
+                        }
+                    }
+                    cout << "Time taken: " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << " microseconds" << endl << endl << endl;
+                    break;
                 } else if (sortInput == "3"){
                     break;
                 } else {
@@ -273,9 +385,8 @@ int main()
 
                 if (sortInput == "1")
                 {
-                    vector<Node> copy = youtubers;
                     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-                    mergeSort(copy, "date", 0, youtubers.size() - 1);
+                    mergeSort(copy, "date", 0, copy.size() - 1);
                     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
                     while (true)
                     {
@@ -287,7 +398,7 @@ int main()
                         if (amountInput == "1")
                         {
                             cout << endl << "<Date Joined - Merge Sort>" << endl;
-                            printArray(copy, "date", 0, youtubers.size());
+                            printArray(copy, "date", 0, copy.size());
                             break;
                         } else if (amountInput == "2") {
                             cout << endl << "<Date Joined - Merge Sort>" << endl;
@@ -300,19 +411,191 @@ int main()
                     cout << "Time taken: " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << " microseconds" << endl << endl << endl;
                     break;
                 } else if (sortInput == "2"){
-
+                    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+                    quickSort(copy, "date", 0, copy.size() - 1);
+                    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+                    while (true)
+                    {
+                        cout << "Please choose how many items you would like to see" << endl;
+                        cout << "1. All" << endl;
+                        cout << "2. 20" << endl;
+                        string amountInput;
+                        cin >> amountInput;
+                        if (amountInput == "1")
+                        {
+                            cout << endl << "<Date Joined - Quick Sort>" << endl;
+                            printArray(copy, "date", 0, copy.size());
+                            break;
+                        } else if (amountInput == "2") {
+                            cout << endl << "<Date Joined - Quick Sort>" << endl;
+                            printArray(copy, "date", 0, 20);
+                            break;
+                        } else {
+                            cout << "Sorry that does not seem to be one of the options. Please try again." << endl;
+                        }
+                    }
+                    cout << "Time taken: " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << " microseconds" << endl << endl << endl;
+                    break;
                 } else if (sortInput == "3"){
                     break;
                 } else {
                     cout << "Sorry that does not seem to be one of the options. Please try again." << endl;
                 }
             }
-
         } else if (typeInput == "4") {
             break;
         } else {
             cout << "Sorry that does not seem to be one of the options. Please try again." << endl;
         }
+    }
+}
+
+int main()
+{
+    vector<Node> youtubers;
+    youtubers.emplace_back("", 15757, 19169156, "1/25/2007");
+    youtubers.emplace_back("DemiLovatoVEVO", 165, 12109565, "5/12/2009");
+    youtubers.emplace_back("RomanAtwoodVlogs", 1561, 14990695, "8/12/2013");
+    youtubers.emplace_back("Like Nastya", 226, 10476486, "1/14/2016");
+    youtubers.emplace_back("Its JoJo Siwa", 405, 8146407, "2/1/2015");
+    while (true)
+    {
+        vector<Node> copy = youtubers;
+        cout << "Choose whether you wish to sort all the youtube channels or seperated by country or category" << endl;
+        cout << "1. All" << endl;
+        cout << "2. Separate by Country" << endl;
+        cout << "3. Separate by Category" << endl;
+        cout << "4. Exit program" << endl;
+
+        string separateInput;
+        cin >> separateInput;
+
+        if (separateInput == "1")
+        {
+            category(copy);
+        } else if (separateInput == "2") {
+
+            set<string> countries;
+            for(int i = 0; i < youtubers.size(); i++)
+            {
+                countries.insert(youtubers[i].country);
+            }
+
+            while (true)
+            {
+                cout << "Enter which country you wish access" << endl;
+
+                string channelInput;
+                cin >> channelInput;
+                if (countries.count(channelInput) != 0)
+                {
+
+                    category(copy);
+                    break;
+                } else {
+                    cout << "Sorry that does not countries. You may have misspelled it. Please try again." << endl;
+                }
+
+            }
+        } else if (separateInput == "3") {
+            while (true)
+            {
+                cout << "Choose which category you wish access" << endl;
+                cout << "1. Film and Animation" << endl;
+                cout << "2. Autos & Vehicles" << endl;
+                cout << "3. Music" << endl;
+                cout << "4. Pets & Animals" << endl;
+                cout << "5. Sports" << endl;
+                cout << "6. Travel & Events" << endl;
+                cout << "7. Gaming" << endl;
+                cout << "8. People & Blogs" << endl;
+                cout << "9. Comedy" << endl;
+                cout << "10. Entertainment" << endl;
+                cout << "11. News & Politics" << endl;
+                cout << "12. Howto & Style" << endl;
+                cout << "13. Education" << endl;
+                cout << "14. Science & Technology" << endl;
+                cout << "15. Channel Trailer:" << endl;
+                cout << "16. Back" << endl;
+
+                string channelInput;
+                cin >> channelInput;
+
+                if (channelInput == "1")
+                {
+
+                    category(copy);
+                    break;
+                } else if (channelInput == "2"){
+
+                    category(copy);
+                    break;
+                } else if (channelInput == "3"){
+
+                    category(copy);
+                    break;
+                } else if (channelInput == "4"){
+
+                    category(copy);
+                    break;
+                } else if (channelInput == "5"){
+
+                    category(copy);
+                    break;
+                } else if (channelInput == "6"){
+
+                    category(copy);
+                    break;
+                } else if (channelInput == "7"){
+
+                    category(copy);
+                    break;
+                } else if (channelInput == "8"){
+
+                    category(copy);
+                    break;
+                } else if (channelInput == "9"){
+
+                    category(copy);
+                    break;
+                } else if (channelInput == "10"){
+
+                    category(copy);
+                    break;
+                } else if (channelInput == "11"){
+
+                    category(copy);
+                    break;
+                } else if (channelInput == "12"){
+
+                    category(copy);
+                    break;
+                } else if (channelInput == "13"){
+
+                    category(copy);
+                    break;
+                } else if (channelInput == "14"){
+
+                    category(copy);
+                    break;
+                } else if (channelInput == "15"){
+
+                    category(copy);
+                    break;
+                } else if (channelInput == "16"){
+                    break;
+                } else {
+                    cout << "Sorry that does not seem to be one of the options. Please try again." << endl;
+                }
+
+            }
+
+        } else if (separateInput == "4") {
+            break;
+        } else {
+            cout << "Sorry that does not seem to be one of the options. Please try again." << endl;
+        }
+
     }
 
 }
