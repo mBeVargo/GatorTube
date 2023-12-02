@@ -489,7 +489,7 @@ int main()
                 cin >> channelInput;
                 if (countries.count(channelInput) != 0)
                 {
-
+                    //M put code here
                     category(copy);
                     break;
                 } else {
@@ -523,63 +523,63 @@ int main()
 
                 if (channelInput == "1")
                 {
-
+                    //M put code here
                     category(copy);
                     break;
                 } else if (channelInput == "2"){
-
+                    //M put code here
                     category(copy);
                     break;
                 } else if (channelInput == "3"){
-
+                    //M put code here
                     category(copy);
                     break;
                 } else if (channelInput == "4"){
-
+                    //M put code here
                     category(copy);
                     break;
                 } else if (channelInput == "5"){
-
+                    //M put code here
                     category(copy);
                     break;
                 } else if (channelInput == "6"){
-
+                    //M put code here
                     category(copy);
                     break;
                 } else if (channelInput == "7"){
-
+                    //M put code here
                     category(copy);
                     break;
                 } else if (channelInput == "8"){
-
+                    //M put code here
                     category(copy);
                     break;
                 } else if (channelInput == "9"){
-
+                    //M put code here
                     category(copy);
                     break;
                 } else if (channelInput == "10"){
-
+                    //M put code here
                     category(copy);
                     break;
                 } else if (channelInput == "11"){
-
+                    //M put code here
                     category(copy);
                     break;
                 } else if (channelInput == "12"){
-
+                    //M put code here
                     category(copy);
                     break;
                 } else if (channelInput == "13"){
-
+                    //M put code here
                     category(copy);
                     break;
                 } else if (channelInput == "14"){
-
+                    //M put code here
                     category(copy);
                     break;
                 } else if (channelInput == "15"){
-
+                    //M put code here
                     category(copy);
                     break;
                 } else if (channelInput == "16"){
