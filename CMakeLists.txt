@@ -1,8 +1,6 @@
-cmake_minimum_required(VERSION 3.26)
-project(Final_Project)
+cmake_minimum_required(VERSION 3.17)
+project(COP3530_Final_Parsing)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 11)
 
-add_executable(Final_Project main.cpp
-        Node.h
-        Node.cpp)
+add_executable(COP3530_Final_Parsing main.cpp)
