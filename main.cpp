@@ -40,7 +40,7 @@ int main() {
     long tempVids = 0;
 
     int channelCnt = 0;
-    std::vector<Node*> allData;
+    std::vector<Node> allData;
     std::string input;
     getline(fileStream, input);
     while(getline(fileStream, input)) {
@@ -51,50 +51,36 @@ int main() {
             getline(dataIn, token, '\t');
             getline(dataIn, token, '\t');
             tempCat = token;
-            //std::cout << "tempCat = " << token << std::endl;
             getline(dataIn, token, '\t');
             getline(dataIn, token, '\t');
-            tempCountry = token;
-            /*if (token == "") {
-                std::cout << "tempCountry = Unknown" << std::endl;
+            if (token == "") {
+                tempCountry = "Unknown";
             }
             else {
-                std::cout << "tempCountry = " << token << std::endl;
-            }*/
+                tempCountry = token;
+            }
             //getline(dataIn, token, '\t');  WARNING: USED TO BE DESCRIPTION - FIELD HAS BEEN REMOVED FROM FILE
             getline(dataIn, token, '\t');
-            std::cout << "tempSubs = " << token << std::endl;
             tempSubs = stol(token);
-            //std::cout << "tempSubs = " << token << std::endl;
             getline(dataIn, token, '\t');
-            tempDate = token;
-            /*if (token == "") {
-                std::cout << "tempDate = 2/14/2015" << std::endl;
+            if (token == "") {
+                tempDate = "2/14/2015";
             }
             else {
-                std::cout << "tempCountry = " << token << std::endl;
-            }*/
+                tempDate = token;
+            }
             getline(dataIn, token, '\t');
             getline(dataIn, token, '\t');
             getline(dataIn, token, '\t');
             getline(dataIn, token, '\t');
             tempName = token;
-            //std::cout << "tempName = " << token << std::endl;
             getline(dataIn, token, '\t');
             getline(dataIn, token, '\t');
             getline(dataIn, token, '\t');
-            std::cout << "tempVids = " << token << std::endl;
             tempVids = stol(token);
-            //std::cout << "tempVids = " << token << std::endl;
-
             Node* temp = new Node(tempCat, tempCountry, tempSubs, tempDate, tempName, tempVids);
-            allData.push_back(temp);
+            allData.push_back(*temp);
             channelCnt += 1;
-            std::cout <<  "***" << channelCnt << " channels pushed. Vector size = " << allData.size()  << "***" << std::endl;
-            /*std::cout << "**" << channelCnt << "**" << std::endl;
-            if(channelCnt >= 100000) {
-                break;
-            }*/
         }
         catch (std::exception e) {
             continue;
