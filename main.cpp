@@ -587,6 +587,14 @@ int main()
     }
 
 
+    for(auto i = allData.begin(); i != allData.end(); i++)
+    {
+        if(i->join_date.size() < 6)
+        {
+            allData.erase(i);
+        }
+    }
+
     while (true)
     {
         vector<Node> copy = allData;
