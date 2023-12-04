@@ -695,7 +695,7 @@ int main()
                 cout << "12. Howto & Style" << endl;
                 cout << "13. Education" << endl;
                 cout << "14. Science & Technology" << endl;
-                cout << "15. Channel Trailer:" << endl;
+                cout << "15. Nonprofits & Activism" << endl;
                 cout << "16. Back" << endl;
 
                 string channelInput;
@@ -861,7 +861,7 @@ int main()
                     vector<Node> copy2;
                     for(auto i = copy.begin(); i != copy.end(); i++)
                     {
-                        if(i->category =="Channel Trailer:")
+                        if(i->category =="Nonprofits & Activism")
                         {
                             copy2.emplace_back(*i);
                         }
