@@ -523,7 +523,6 @@ void category(vector<Node> copy)
 
 int main()
 {
-    //std::cout << "First few lines..." << std::endl;
     std::string file = "channels_no_description.txt";
     std::ifstream fileStream;
     fileStream.open(file);
@@ -563,24 +562,25 @@ int main()
             if (token == "") {
                 tempCountry = "Unknown";
             }
-            else if (std::regex_search(token, std::regex("[a-zA-Z'-]+"))) {
-                tempCountry = token;
-            }
+            //***regex validation removed to save execution time - only first field check to validate each line is left in***
+            //else if (std::regex_search(token, std::regex("[a-zA-Z'-]+"))) {
+            //    tempCountry = token;
+            //}
             else {
                 continue;
             }
-            //getline(dataIn, token, '\t');  WARNING: USED TO BE DESCRIPTION - FIELD HAS BEEN REMOVED FROM FILE
+            //getline(dataIn, token, '\t');  ***WARNING: USED TO BE DESCRIPTION - FIELD HAS BEEN REMOVED FROM FILE, PLEASE DO NOT USE DESCRIPTION FIELD***
             getline(dataIn, token, '\t');
             tempSubs = stol(token);
             getline(dataIn, token, '\t');
             if (token == "") {
                 tempDate = "2/14/2015";
             }
-            else if (std::regex_match(token, std::regex("(0?[1-9null]|1[012])[- \\/.](0?[1-9]|[12][0-9]|3[01])[- \\/.](19|20)\\d\\d"))) {
-                tempDate = token;
-            }
+            //else if (std::regex_match(token, std::regex("(0?[1-9null]|1[012])[- \\/.](0?[1-9]|[12][0-9]|3[01])[- \\/.](19|20)\\d\\d"))) {
+            //    tempDate = token;
+            //}
             else {
-                continue;
+                tempDate = token;
             }
             getline(dataIn, token, '\t');
             getline(dataIn, token, '\t');
@@ -590,12 +590,10 @@ int main()
             getline(dataIn, token, '\t');
             getline(dataIn, token, '\t');
             getline(dataIn, token, '\t');
-            if (std::regex_match(token, std::regex("[0-9]*"))) {
-                tempVids = stol(token);
-            }
-            else {
-                continue;
-            }
+            //if (std::regex_match(token, std::regex("[0-9]*"))) {
+            //    tempVids = stol(token);
+            //}
+            tempVids = stol(token);
             Node* temp = new Node(tempCat, tempCountry, tempSubs, tempDate, tempName, tempVids);
             allData.push_back(*temp);
             channelCnt += 1;
@@ -607,16 +605,7 @@ int main()
         }
 
     }
-
-
-    for(auto i = allData.begin(); i != allData.end(); i++)
-    {
-        if(i->join_date.size() < 6)
-        {
-            allData.erase(i);
-        }
-    }
-
+    
     while (true)
     {
         vector<Node> copy = allData;
