@@ -567,7 +567,7 @@ int main()
             //    tempCountry = token;
             //}
             else {
-                continue;
+                tempCountry = token;
             }
             //getline(dataIn, token, '\t');  ***WARNING: USED TO BE DESCRIPTION - FIELD HAS BEEN REMOVED FROM FILE, PLEASE DO NOT USE DESCRIPTION FIELD***
             getline(dataIn, token, '\t');
