@@ -3,33 +3,67 @@
 #include <vector>
 #include <chrono>
 #include <set>
-#include "Node.h"
+#include <fstream>
+#include <sstream>
+#include <regex>
+using namespace std;
 
+struct Node {
+    std::string category;
+    std::string country;
+    long subs;
+    std::string join_date;
+    std::string name;
+    long videos;
 
+    Node() = default;
+    Node(std::string category_, std::string country_, long subs_, std::string join_date_, std::string name_, long videos_) {
+        category = category_;
+        country = country_;
+        subs = subs_;
+        join_date = join_date_;
+        name = name_;
+        videos = videos_;
+    }
+};
+
+//determines if one has an earlier date than two
 bool compareDates(string one, string two)
 {
+    //get the years for both strings
     int yearOne = stoi(one.substr(one.length() - 4, one.length()));
     int yearTwo = stoi(two.substr(two.length() - 4, two.length()));
 
+    //checks if they have the same year
     if (yearOne == yearTwo)
     {
+        //get the months for both strings
         int monthOne = stoi(one.substr(0, one.find('/')));
         int monthTwo = stoi(two.substr(0, two.find('/')));
+
+        //checks if they have the same month
         if (monthOne == monthTwo)
         {
+            //get the days for both strings
             int dayOne = stoi(one.substr(one.find('/') + 1, one.length() + 5));
             int dayTwo = stoi(two.substr(two.find('/') + 1, two.length() + 5));
+
+            //returns true if day one is earlier than day two or if they are the same and false if not
             if (dayOne >= dayTwo)
             {
                 return true;
             } else {
                 return false;
             }
+
+        //returns true if month one is earlier than month two and false if not
         } else if (monthOne > monthTwo) {
             return true;
         } else {
             return false;
         }
+
+    //returns true if year one is earlier than year two and false if not
     } else if (yearOne > yearTwo) {
         return true;
     } else {
@@ -37,6 +71,7 @@ bool compareDates(string one, string two)
     }
 }
 
+//merges two list together
 void merge(vector<Node> &list, string type, long start, long middle, long end)
 {
     long lengthOne = middle - start + 1;
@@ -57,11 +92,12 @@ void merge(vector<Node> &list, string type, long start, long middle, long end)
         right.emplace_back(list[middle + 1 + j]);
     }
 
+    //merges based on videos
     if(type == "vids")
     {
         while(leftIndex < lengthOne && rightIndex < lengthTwo)
         {
-            if(left[leftIndex].video >= right[rightIndex].video)
+            if(left[leftIndex].videos >= right[rightIndex].videos)
             {
                 list[totalIndex] = left[leftIndex];
                 leftIndex++;
@@ -72,11 +108,12 @@ void merge(vector<Node> &list, string type, long start, long middle, long end)
             totalIndex++;
         }
 
+    //merges based on number of subscribers
     } else if (type == "subs") {
 
         while(leftIndex < lengthOne && rightIndex < lengthTwo)
         {
-            if(left[leftIndex].subscriber >= right[rightIndex].subscriber)
+            if(left[leftIndex].subs >= right[rightIndex].subs)
             {
                 list[totalIndex] = left[leftIndex];
                 leftIndex++;
@@ -87,10 +124,11 @@ void merge(vector<Node> &list, string type, long start, long middle, long end)
             totalIndex++;
         }
 
+    //merges based on date joined
     } else if (type == "date") {
         while(leftIndex < lengthOne && rightIndex < lengthTwo)
         {
-            if(compareDates(left[leftIndex].date, right[rightIndex].date))
+            if(compareDates(left[leftIndex].join_date, right[rightIndex].join_date))
             {
                 list[totalIndex] = left[leftIndex];
                 leftIndex++;
@@ -118,6 +156,7 @@ void merge(vector<Node> &list, string type, long start, long middle, long end)
     }
 }
 
+//sorts the list using the merge sort algorithm
 void mergeSort(vector<Node> &list, string type, long start, long end)
 {
     if (start < end)
@@ -131,37 +170,45 @@ void mergeSort(vector<Node> &list, string type, long start, long end)
     }
 }
 
+//prints out the items in the list, from start to end, and there type
 void printArray(vector<Node> list, string type, long start, long end)
 {
-
+    //checks if type is vids
     if (type == "vids")
     {
+        //prints out the name and the number of videos
         for (auto i = start; i < end; i++)
-            cout << list[i].value << ": " << list[i].video << endl;
+            cout << list[i].name << ": " << list[i].videos << endl;
+
+    //checks if type is subs
     } else if (type == "subs") {
+        //prints out the name and the number of subscribers
         for (auto i = start; i < end; i++)
-            cout << list[i].value << ": " << list[i].subscriber << endl;
+            cout << list[i].name << ": " << list[i].subs << endl;
+
+    //checks if type is date
     } else if (type == "date") {
+        //prints out the name and the date joined
         for (auto i = start; i < end; i++)
-            cout << list[i].value << ": " << list[i].date << endl;
+            cout << list[i].name << ": " << list[i].join_date << endl;
     }
 
     cout << endl;
 }
 
-int partition(vector<Node> list, string type,int low,int high)
+long partition(vector<Node> list, string type, long low, long high)
 {
 
 
     if (type == "vids"){
         //Note that the pivot is chosen is high and the list isnt sorted yet
         //choose the pivot
-        auto pivot = list[high].video;
-        int i=(low-1);
+        auto pivot = list[high].videos;
+        long i=(low-1);
 
-        for(int j=low;j<=high;j++)
+        for(long j=low;j<=high;j++)
         {
-            if(list[j].video <pivot)
+            if(list[j].videos <pivot)
             {
                 i++;
                 swap(list[i],list[j]);
@@ -172,12 +219,12 @@ int partition(vector<Node> list, string type,int low,int high)
     }
 
     if (type == "subs"){
-        auto pivot = list[high].subscriber;
-        int i=(low-1);
+        auto pivot = list[high].subs;
+        long i=(low-1);
 
-        for(int j=low;j<=high;j++)
+        for(long j=low;j<=high;j++)
         {
-            if(list[j].subscriber <pivot)
+            if(list[j].subs <pivot)
             {
                 i++;
                 swap(list[i],list[j]);
@@ -188,13 +235,13 @@ int partition(vector<Node> list, string type,int low,int high)
     }
 
     if(type == "date"){
-        auto pivot = list[high].date;
-        int i=(low-1);
+        auto pivot = list[high].join_date;
+        long i=(low-1);
 
         //compareDates(list[j].data, pivot) != true ;
-        for(int j=low; compareDates(list[j].date, pivot) != true ;j++)
+        for(long j=low; compareDates(list[j].join_date, pivot) != true ;j++)
         {
-            if(compareDates(list[j].date, pivot))
+            if(compareDates(list[j].join_date, pivot))
             {
                 i++;
                 swap(list[i],list[j]);
@@ -207,12 +254,12 @@ int partition(vector<Node> list, string type,int low,int high)
 
 }
 
-void quickSort(vector<Node> &list, string type, int low,int high)
+void quickSort(vector<Node> &list, string type, long low,long high)
 {
 
     if(low<high)
     {
-        int pivot = partition(list, type ,low,high);
+        long pivot = partition(list, type ,low,high);
         //pivot left
         quickSort(list, type,low,pivot-1);
         //pivot right
@@ -220,6 +267,7 @@ void quickSort(vector<Node> &list, string type, int low,int high)
     }
 }
 
+//chooses which category to sort based on
 void category(vector<Node> copy)
 {
     while(true)
@@ -231,6 +279,8 @@ void category(vector<Node> copy)
         cout << "4. Back" << endl;
         string typeInput;
         cin >> typeInput;
+
+        //Sorts based on video count
         if (typeInput == "1")
         {
             while (true)
@@ -242,6 +292,7 @@ void category(vector<Node> copy)
                 string sortInput;
                 cin >> sortInput;
 
+                //merge sorts based on videos
                 if (sortInput == "1")
                 {
                     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
@@ -269,6 +320,7 @@ void category(vector<Node> copy)
                     }
                     cout << "Time taken: " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << " microseconds" << endl << endl << endl;
                     break;
+                //quick sorts based on videos
                 } else if (sortInput == "2"){
                     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
                     quickSort(copy, "vids", 0, copy.size() - 1);
@@ -295,12 +347,16 @@ void category(vector<Node> copy)
                     }
                     cout << "Time taken: " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << " microseconds" << endl << endl << endl;
                     break;
+                //goes back
                 } else if (sortInput == "3"){
                     break;
+                //incorrect response
                 } else {
                     cout << "Sorry that does not seem to be one of the options. Please try again." << endl;
                 }
             }
+
+        //Sorts based on subscriber count
         } else if (typeInput == "2") {
 
             while (true)
@@ -312,6 +368,7 @@ void category(vector<Node> copy)
                 string sortInput;
                 cin >> sortInput;
 
+                //merge sorts based on subscribers
                 if (sortInput == "1")
                 {
                     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
@@ -339,6 +396,8 @@ void category(vector<Node> copy)
                     }
                     cout << "Time taken: " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << " microseconds" << endl << endl << endl;
                     break;
+
+                //quick sorts based on subscribers
                 } else if (sortInput == "2"){
                     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
                     quickSort(copy, "subs", 0, copy.size() - 1);
@@ -365,13 +424,17 @@ void category(vector<Node> copy)
                     }
                     cout << "Time taken: " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << " microseconds" << endl << endl << endl;
                     break;
+
+                //goes back
                 } else if (sortInput == "3"){
                     break;
+                //incorrect response
                 } else {
                     cout << "Sorry that does not seem to be one of the options. Please try again." << endl;
                 }
             }
 
+        //Sorts based on date joined
         } else if (typeInput == "3") {
 
             while (true)
@@ -383,6 +446,7 @@ void category(vector<Node> copy)
                 string sortInput;
                 cin >> sortInput;
 
+                //merge sorts based on date
                 if (sortInput == "1")
                 {
                     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
@@ -410,6 +474,8 @@ void category(vector<Node> copy)
                     }
                     cout << "Time taken: " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << " microseconds" << endl << endl << endl;
                     break;
+
+                //quick sorts based on date
                 } else if (sortInput == "2"){
                     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
                     quickSort(copy, "date", 0, copy.size() - 1);
@@ -436,14 +502,19 @@ void category(vector<Node> copy)
                     }
                     cout << "Time taken: " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << " microseconds" << endl << endl << endl;
                     break;
+                //goes back
                 } else if (sortInput == "3"){
                     break;
+                //incorrect response
                 } else {
                     cout << "Sorry that does not seem to be one of the options. Please try again." << endl;
                 }
             }
+
+        //goes back
         } else if (typeInput == "4") {
             break;
+        //incorrect response
         } else {
             cout << "Sorry that does not seem to be one of the options. Please try again." << endl;
         }
@@ -452,15 +523,92 @@ void category(vector<Node> copy)
 
 int main()
 {
-    vector<Node> youtubers;
-    youtubers.emplace_back("", 15757, 19169156, "1/25/2007");
-    youtubers.emplace_back("DemiLovatoVEVO", 165, 12109565, "5/12/2009");
-    youtubers.emplace_back("RomanAtwoodVlogs", 1561, 14990695, "8/12/2013");
-    youtubers.emplace_back("Like Nastya", 226, 10476486, "1/14/2016");
-    youtubers.emplace_back("Its JoJo Siwa", 405, 8146407, "2/1/2015");
+    std::string file = "channels_no_description.txt";
+    std::ifstream fileStream;
+    fileStream.open(file);
+    if(!(fileStream.is_open())) {
+        std::cout << "File not open. Check file location (cmake-build-debug for clion), and file/stream name" << std::endl;
+    }
+
+    std::string tempCat = "";
+    std::string tempCountry = "";
+    std::string tempName = "";
+    long tempSubs = 0;
+    std::string tempDate = "";
+    long tempVids = 0;
+
+    int channelCnt = 0;
+    std::vector<Node> allData;
+    std::string input;
+    getline(fileStream, input);
+    std::set<std::string> validCats = {"Music", "Nonprofits & Activism", "Gaming", "Travel & Events", "People & Blogs",
+                                       "Entertainment", "Sports", "Autos & Vehicles", "Howto & Style", "Science & Technology",
+                                       "Education", "Film and Animation", "Pets & Animals", "News & Politics", "Comedy"};
+    while(getline(fileStream, input)) {
+        try {
+            std::stringstream dataIn(input);
+            std::string token;
+
+            getline(dataIn, token, '\t');
+            getline(dataIn, token, '\t');
+            if (validCats.find(token) != validCats.end()) {
+                tempCat = token;
+            }
+            else {
+                continue;
+            }
+            getline(dataIn, token, '\t');
+            getline(dataIn, token, '\t');
+            if (token == "") {
+                tempCountry = "Unknown";
+            }
+            //***regex validation removed to save execution time - only first field check to validate each line is left in***
+            //else if (std::regex_search(token, std::regex("[a-zA-Z'-]+"))) {
+            //    tempCountry = token;
+            //}
+            else {
+                continue;
+            }
+            //getline(dataIn, token, '\t');  ***WARNING: USED TO BE DESCRIPTION - FIELD HAS BEEN REMOVED FROM FILE, PLEASE DO NOT USE DESCRIPTION FIELD***
+            getline(dataIn, token, '\t');
+            tempSubs = stol(token);
+            getline(dataIn, token, '\t');
+            if (token == "") {
+                tempDate = "2/14/2015";
+            }
+            //else if (std::regex_match(token, std::regex("(0?[1-9null]|1[012])[- \\/.](0?[1-9]|[12][0-9]|3[01])[- \\/.](19|20)\\d\\d"))) {
+            //    tempDate = token;
+            //}
+            else {
+                tempDate = token;
+            }
+            getline(dataIn, token, '\t');
+            getline(dataIn, token, '\t');
+            getline(dataIn, token, '\t');
+            getline(dataIn, token, '\t');
+            tempName = token;
+            getline(dataIn, token, '\t');
+            getline(dataIn, token, '\t');
+            getline(dataIn, token, '\t');
+            //if (std::regex_match(token, std::regex("[0-9]*"))) {
+            //    tempVids = stol(token);
+            //}
+            tempVids = stol(token);
+            Node* temp = new Node(tempCat, tempCountry, tempSubs, tempDate, tempName, tempVids);
+            allData.push_back(*temp);
+            channelCnt += 1;
+            //comment left in for future testing purposes
+            //std::cout << "name = " << allData.at(allData.size()-1).name << " " << "tempSubs = " << allData.at(allData.size()-1).subs << " tempCountry = " << allData.at(allData.size()-1).country << std::endl;
+        }
+        catch (std::exception e) {
+            continue;
+        }
+
+    }
+    
     while (true)
     {
-        vector<Node> copy = youtubers;
+        vector<Node> copy = allData;
         cout << "Choose whether you wish to sort all the youtube channels or seperated by country or category" << endl;
         cout << "1. All" << endl;
         cout << "2. Separate by Country" << endl;
@@ -470,33 +618,54 @@ int main()
         string separateInput;
         cin >> separateInput;
 
+        //Sorts with all items in it
         if (separateInput == "1")
         {
             category(copy);
+
+        //sorts based on the countries the youtubers live in
         } else if (separateInput == "2") {
 
+            //makes a set of all the countries in the list
             set<string> countries;
-            for(int i = 0; i < youtubers.size(); i++)
+            for(int i = 0; i < allData.size(); i++)
             {
-                countries.insert(youtubers[i].country);
+                countries.insert(allData[i].country);
             }
 
             while (true)
             {
-                cout << "Enter which country you wish access" << endl;
+                cout << "Enter which country you wish access or enter \"back\" to go back" << endl;
 
                 string channelInput;
-                cin >> channelInput;
-                if (countries.count(channelInput) != 0)
+                getline(cin, channelInput);
+                getline(cin, channelInput);
+
+                //goes back
+                if (channelInput == "back")
                 {
-                    //M put code here
-                    category(copy);
                     break;
+
+                //checks if channelInput is in the list
+                } else if (countries.count(channelInput) != 0){
+                    vector<Node> copy2;
+                    for(auto i = copy.begin(); i != copy.end(); i++)
+                    {
+                        if(i->country != channelInput)
+                        {
+                            copy2.emplace_back(*i);
+                        }
+                    }
+                    category(copy2);
+                    break;
+
+                //incorrect response
                 } else {
                     cout << "Sorry that does not countries. You may have misspelled it. Please try again." << endl;
                 }
 
             }
+        //sorts based on the category of the channel
         } else if (separateInput == "3") {
             while (true)
             {
@@ -515,83 +684,193 @@ int main()
                 cout << "12. Howto & Style" << endl;
                 cout << "13. Education" << endl;
                 cout << "14. Science & Technology" << endl;
-                cout << "15. Channel Trailer:" << endl;
+                cout << "15. Nonprofits & Activism" << endl;
                 cout << "16. Back" << endl;
 
                 string channelInput;
                 cin >> channelInput;
 
+                //sorts based on one of the categories stated above
                 if (channelInput == "1")
                 {
-                    //M put code here
-                    category(copy);
+                    vector<Node> copy2;
+                    for(auto i = copy.begin(); i != copy.end(); i++)
+                    {
+                        if(i->category == "Film and Animation")
+                        {
+                            copy2.emplace_back(*i);
+                        }
+                    }
+                    category(copy2);
                     break;
                 } else if (channelInput == "2"){
-                    //M put code here
-                    category(copy);
+                    vector<Node> copy2;
+                    for(auto i = copy.begin(); i != copy.end(); i++)
+                    {
+                        if(i->category == "Autos & Vehicles")
+                        {
+                            copy2.emplace_back(*i);
+                        }
+                    }
+                    category(copy2);
                     break;
                 } else if (channelInput == "3"){
-                    //M put code here
-                    category(copy);
+                    vector<Node> copy2;
+                    for(auto i = copy.begin(); i != copy.end(); i++)
+                    {
+                        if(i->category == "Music")
+                        {
+                            copy2.emplace_back(*i);
+                        }
+                    }
+                    category(copy2);
                     break;
                 } else if (channelInput == "4"){
-                    //M put code here
-                    category(copy);
+                    vector<Node> copy2;
+                    for(auto i = copy.begin(); i != copy.end(); i++)
+                    {
+                        if(i->category == "Pets & Animals")
+                        {
+                            copy2.emplace_back(*i);
+                        }
+                    }
+                    category(copy2);
                     break;
                 } else if (channelInput == "5"){
-                    //M put code here
-                    category(copy);
+                    vector<Node> copy2;
+                    for(auto i = copy.begin(); i != copy.end(); i++)
+                    {
+                        if(i->category == "Sports")
+                        {
+                            copy2.emplace_back(*i);
+                        }
+                    }
+                    category(copy2);
                     break;
                 } else if (channelInput == "6"){
-                    //M put code here
-                    category(copy);
+                    vector<Node> copy2;
+                    for(auto i = copy.begin(); i != copy.end(); i++)
+                    {
+                        if(i->category == "Travel & Events")
+                        {
+                            copy2.emplace_back(*i);
+                        }
+                    }
+                    category(copy2);
                     break;
                 } else if (channelInput == "7"){
-                    //M put code here
-                    category(copy);
+                    vector<Node> copy2;
+                    for(auto i = copy.begin(); i != copy.end(); i++)
+                    {
+                        if(i->category == "Gaming")
+                        {
+                            copy2.emplace_back(*i);
+                        }
+                    }
+                    category(copy2);
                     break;
                 } else if (channelInput == "8"){
-                    //M put code here
-                    category(copy);
+                    vector<Node> copy2;
+                    for(auto i = copy.begin(); i != copy.end(); i++)
+                    {
+                        if(i->category == "People & Blogs")
+                        {
+                            copy2.emplace_back(*i);
+                        }
+                    }
+                    category(copy2);
                     break;
                 } else if (channelInput == "9"){
-                    //M put code here
-                    category(copy);
+                    vector<Node> copy2;
+                    for(auto i = copy.begin(); i != copy.end(); i++)
+                    {
+                        if(i->category == "Comedy")
+                        {
+                            copy2.emplace_back(*i);
+                        }
+                    }
+                    category(copy2);
                     break;
                 } else if (channelInput == "10"){
-                    //M put code here
-                    category(copy);
+                    vector<Node> copy2;
+                    for(auto i = copy.begin(); i != copy.end(); i++)
+                    {
+                        if(i->category == "Entertainment")
+                        {
+                            copy2.emplace_back(*i);
+                        }
+                    }
+                    category(copy2);
                     break;
                 } else if (channelInput == "11"){
-                    //M put code here
-                    category(copy);
+                    vector<Node> copy2;
+                    for(auto i = copy.begin(); i != copy.end(); i++)
+                    {
+                        if(i->category == "News & Politics")
+                        {
+                            copy2.emplace_back(*i);
+                        }
+                    }
+                    category(copy2);
                     break;
                 } else if (channelInput == "12"){
-                    //M put code here
-                    category(copy);
+                    vector<Node> copy2;
+                    for(auto i = copy.begin(); i != copy.end(); i++)
+                    {
+                        if(i->category == "Howto & Style")
+                        {
+                            copy2.emplace_back(*i);
+                        }
+                    }
+                    category(copy2);
                     break;
                 } else if (channelInput == "13"){
-                    //M put code here
-                    category(copy);
+                    vector<Node> copy2;
+                    for(auto i = copy.begin(); i != copy.end(); i++)
+                    {
+                        if(i->category == "Education")
+                        {
+                            copy2.emplace_back(*i);
+                        }
+                    }
+                    category(copy2);
                     break;
                 } else if (channelInput == "14"){
-                    //M put code here
-                    category(copy);
+                    vector<Node> copy2;
+                    for(auto i = copy.begin(); i != copy.end(); i++)
+                    {
+                        if(i->category == "Science & Technology")
+                        {
+                            copy2.emplace_back(*i);
+                        }
+                    }
+                    category(copy2);
                     break;
                 } else if (channelInput == "15"){
-                    //M put code here
-                    category(copy);
+                    vector<Node> copy2;
+                    for(auto i = copy.begin(); i != copy.end(); i++)
+                    {
+                        if(i->category =="Nonprofits & Activism")
+                        {
+                            copy2.emplace_back(*i);
+                        }
+                    }
+                    category(copy2);
                     break;
+
+                //goes back
                 } else if (channelInput == "16"){
                     break;
+
+                //incorrect response
                 } else {
                     cout << "Sorry that does not seem to be one of the options. Please try again." << endl;
                 }
-
             }
-
+        //ends the program
         } else if (separateInput == "4") {
             break;
+        //incorrect response
         } else {
             cout << "Sorry that does not seem to be one of the options. Please try again." << endl;
         }
