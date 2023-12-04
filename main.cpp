@@ -5,6 +5,7 @@
 #include <set>
 #include <fstream>
 #include <sstream>
+#include <regex>
 using namespace std;
 
 struct Node {
@@ -522,7 +523,7 @@ void category(vector<Node> copy)
 
 int main()
 {
-    std::cout << "First few lines..." << std::endl;
+    //std::cout << "First few lines..." << std::endl;
     std::string file = "channels_no_description.txt";
     std::ifstream fileStream;
     fileStream.open(file);
@@ -541,6 +542,9 @@ int main()
     std::vector<Node> allData;
     std::string input;
     getline(fileStream, input);
+    std::set<std::string> validCats = {"Music", "Nonprofits & Activism", "Gaming", "Travel & Events", "People & Blogs",
+                                       "Entertainment", "Sports", "Autos & Vehicles", "Howto & Style", "Science & Technology",
+                                       "Education", "Film and Animation", "Pets & Animals", "News & Politics", "Comedy"};
     while(getline(fileStream, input)) {
         try {
             std::stringstream dataIn(input);
@@ -548,14 +552,22 @@ int main()
 
             getline(dataIn, token, '\t');
             getline(dataIn, token, '\t');
-            tempCat = token;
+            if (validCats.find(token) != validCats.end()) {
+                tempCat = token;
+            }
+            else {
+                continue;
+            }
             getline(dataIn, token, '\t');
             getline(dataIn, token, '\t');
             if (token == "") {
                 tempCountry = "Unknown";
             }
-            else {
+            else if (std::regex_search(token, std::regex("[a-zA-Z'-]+"))) {
                 tempCountry = token;
+            }
+            else {
+                continue;
             }
             //getline(dataIn, token, '\t');  WARNING: USED TO BE DESCRIPTION - FIELD HAS BEEN REMOVED FROM FILE
             getline(dataIn, token, '\t');
@@ -564,8 +576,11 @@ int main()
             if (token == "") {
                 tempDate = "2/14/2015";
             }
-            else {
+            else if (std::regex_match(token, std::regex("(0?[1-9null]|1[012])[- \\/.](0?[1-9]|[12][0-9]|3[01])[- \\/.](19|20)\\d\\d"))) {
                 tempDate = token;
+            }
+            else {
+                continue;
             }
             getline(dataIn, token, '\t');
             getline(dataIn, token, '\t');
@@ -575,10 +590,17 @@ int main()
             getline(dataIn, token, '\t');
             getline(dataIn, token, '\t');
             getline(dataIn, token, '\t');
-            tempVids = stol(token);
+            if (std::regex_match(token, std::regex("[0-9]*"))) {
+                tempVids = stol(token);
+            }
+            else {
+                continue;
+            }
             Node* temp = new Node(tempCat, tempCountry, tempSubs, tempDate, tempName, tempVids);
             allData.push_back(*temp);
             channelCnt += 1;
+            //comment left in for future testing purposes
+            //std::cout << "name = " << allData.at(allData.size()-1).name << " " << "tempSubs = " << allData.at(allData.size()-1).subs << " tempCountry = " << allData.at(allData.size()-1).country << std::endl;
         }
         catch (std::exception e) {
             continue;
