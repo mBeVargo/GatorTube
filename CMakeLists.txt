@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 3.17)
-project(COP3530_Final_Parsing)
+cmake_minimum_required(VERSION 3.26)
+project(Final_Project)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 
-add_executable(COP3530_Final_Parsing main.cpp)
+add_executable(Final_Project main.cpp)
