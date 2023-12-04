@@ -632,13 +632,13 @@ int main()
             {
                 countries.insert(allData[i].country);
             }
-
+            
+            string channelInput;
+            getline(cin, channelInput);
             while (true)
             {
                 cout << "Enter which country you wish access or enter \"back\" to go back" << endl;
 
-                string channelInput;
-                getline(cin, channelInput);
                 getline(cin, channelInput);
 
                 //goes back
