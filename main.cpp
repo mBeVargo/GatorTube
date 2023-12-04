@@ -3,7 +3,6 @@
 #include <vector>
 #include <chrono>
 #include <set>
-#include <iostream>
 #include <fstream>
 #include <sstream>
 using namespace std;
@@ -196,7 +195,7 @@ void printArray(vector<Node> list, string type, long start, long end)
     cout << endl;
 }
 
-int partition(vector<Node> list, string type,int low,int high)
+long partition(vector<Node> list, string type, long low, long high)
 {
 
 
@@ -204,9 +203,9 @@ int partition(vector<Node> list, string type,int low,int high)
         //Note that the pivot is chosen is high and the list isnt sorted yet
         //choose the pivot
         auto pivot = list[high].videos;
-        int i=(low-1);
+        long i=(low-1);
 
-        for(int j=low;j<=high;j++)
+        for(long j=low;j<=high;j++)
         {
             if(list[j].videos <pivot)
             {
@@ -220,9 +219,9 @@ int partition(vector<Node> list, string type,int low,int high)
 
     if (type == "subs"){
         auto pivot = list[high].subs;
-        int i=(low-1);
+        long i=(low-1);
 
-        for(int j=low;j<=high;j++)
+        for(long j=low;j<=high;j++)
         {
             if(list[j].subs <pivot)
             {
@@ -236,10 +235,10 @@ int partition(vector<Node> list, string type,int low,int high)
 
     if(type == "date"){
         auto pivot = list[high].join_date;
-        int i=(low-1);
+        long i=(low-1);
 
         //compareDates(list[j].data, pivot) != true ;
-        for(int j=low; compareDates(list[j].join_date, pivot) != true ;j++)
+        for(long j=low; compareDates(list[j].join_date, pivot) != true ;j++)
         {
             if(compareDates(list[j].join_date, pivot))
             {
@@ -254,12 +253,12 @@ int partition(vector<Node> list, string type,int low,int high)
 
 }
 
-void quickSort(vector<Node> &list, string type, int low,int high)
+void quickSort(vector<Node> &list, string type, long low,long high)
 {
 
     if(low<high)
     {
-        int pivot = partition(list, type ,low,high);
+        long pivot = partition(list, type ,low,high);
         //pivot left
         quickSort(list, type,low,pivot-1);
         //pivot right
@@ -550,56 +549,43 @@ int main()
             getline(dataIn, token, '\t');
             getline(dataIn, token, '\t');
             tempCat = token;
-            //std::cout << "tempCat = " << token << std::endl;
             getline(dataIn, token, '\t');
             getline(dataIn, token, '\t');
-            tempCountry = token;
-            /*if (token == "") {
-                std::cout << "tempCountry = Unknown" << std::endl;
+            if (token == "") {
+                tempCountry = "Unknown";
             }
             else {
-                std::cout << "tempCountry = " << token << std::endl;
-            }*/
+                tempCountry = token;
+            }
             //getline(dataIn, token, '\t');  WARNING: USED TO BE DESCRIPTION - FIELD HAS BEEN REMOVED FROM FILE
             getline(dataIn, token, '\t');
-            std::cout << "tempSubs = " << token << std::endl;
             tempSubs = stol(token);
-            //std::cout << "tempSubs = " << token << std::endl;
             getline(dataIn, token, '\t');
-            tempDate = token;
-            /*if (token == "") {
-                std::cout << "tempDate = 2/14/2015" << std::endl;
+            if (token == "") {
+                tempDate = "2/14/2015";
             }
             else {
-                std::cout << "tempCountry = " << token << std::endl;
-            }*/
+                tempDate = token;
+            }
             getline(dataIn, token, '\t');
             getline(dataIn, token, '\t');
             getline(dataIn, token, '\t');
             getline(dataIn, token, '\t');
             tempName = token;
-            //std::cout << "tempName = " << token << std::endl;
             getline(dataIn, token, '\t');
             getline(dataIn, token, '\t');
             getline(dataIn, token, '\t');
-            std::cout << "tempVids = " << token << std::endl;
             tempVids = stol(token);
-            //std::cout << "tempVids = " << token << std::endl;
-
-            Node temp = Node(tempCat, tempCountry, tempSubs, tempDate, tempName, tempVids);
-            allData.push_back(temp);
+            Node* temp = new Node(tempCat, tempCountry, tempSubs, tempDate, tempName, tempVids);
+            allData.push_back(*temp);
             channelCnt += 1;
-            std::cout <<  "***" << channelCnt << " channels pushed. Vector size = " << allData.size()  << "***" << std::endl;
-            /*std::cout << "**" << channelCnt << "**" << std::endl;
-            if(channelCnt >= 100000) {
-                break;
-            }*/
         }
         catch (std::exception e) {
             continue;
         }
 
     }
+
 
     while (true)
     {
@@ -633,7 +619,8 @@ int main()
                 cout << "Enter which country you wish access or enter \"back\" to go back" << endl;
 
                 string channelInput;
-                cin >> channelInput;
+                getline(cin, channelInput);
+                getline(cin, channelInput);
 
                 //goes back
                 if (channelInput == "back")
@@ -642,14 +629,15 @@ int main()
 
                 //checks if channelInput is in the list
                 } else if (countries.count(channelInput) != 0){
+                    vector<Node> copy2;
                     for(auto i = copy.begin(); i != copy.end(); i++)
                     {
                         if(i->country != channelInput)
                         {
-                            copy.erase(i);
+                            copy2.emplace_back(*i);
                         }
                     }
-                    category(copy);
+                    category(copy2);
                     break;
 
                 //incorrect response
@@ -686,154 +674,169 @@ int main()
                 //sorts based on one of the categories stated above
                 if (channelInput == "1")
                 {
+                    vector<Node> copy2;
                     for(auto i = copy.begin(); i != copy.end(); i++)
                     {
-                        if(i->category != "Film and Animation")
+                        if(i->category == "Film and Animation")
                         {
-                            copy.erase(i);
+                            copy2.emplace_back(*i);
                         }
                     }
-                    category(copy);
+                    category(copy2);
                     break;
                 } else if (channelInput == "2"){
+                    vector<Node> copy2;
                     for(auto i = copy.begin(); i != copy.end(); i++)
                     {
-                        if(i->category != "Autos & Vehicles")
+                        if(i->category == "Autos & Vehicles")
                         {
-                            copy.erase(i);
+                            copy2.emplace_back(*i);
                         }
                     }
-                    category(copy);
+                    category(copy2);
                     break;
                 } else if (channelInput == "3"){
+                    vector<Node> copy2;
                     for(auto i = copy.begin(); i != copy.end(); i++)
                     {
-                        if(i->category != "Music")
+                        if(i->category == "Music")
                         {
-                            copy.erase(i);
+                            copy2.emplace_back(*i);
                         }
                     }
-                    category(copy);
+                    category(copy2);
                     break;
                 } else if (channelInput == "4"){
+                    vector<Node> copy2;
                     for(auto i = copy.begin(); i != copy.end(); i++)
                     {
-                        if(i->category != "Pets & Animals")
+                        if(i->category == "Pets & Animals")
                         {
-                            copy.erase(i);
+                            copy2.emplace_back(*i);
                         }
                     }
-                    category(copy);
+                    category(copy2);
                     break;
                 } else if (channelInput == "5"){
+                    vector<Node> copy2;
                     for(auto i = copy.begin(); i != copy.end(); i++)
                     {
-                        if(i->category != "Sports")
+                        if(i->category == "Sports")
                         {
-                            copy.erase(i);
+                            copy2.emplace_back(*i);
                         }
                     }
-                    category(copy);
+                    category(copy2);
                     break;
                 } else if (channelInput == "6"){
+                    vector<Node> copy2;
                     for(auto i = copy.begin(); i != copy.end(); i++)
                     {
-                        if(i->category != "Travel & Events")
+                        if(i->category == "Travel & Events")
                         {
-                            copy.erase(i);
+                            copy2.emplace_back(*i);
                         }
                     }
-                    category(copy);
+                    category(copy2);
                     break;
                 } else if (channelInput == "7"){
+                    vector<Node> copy2;
                     for(auto i = copy.begin(); i != copy.end(); i++)
                     {
-                        if(i->category != "Gaming")
+                        if(i->category == "Gaming")
                         {
-                            copy.erase(i);
+                            copy2.emplace_back(*i);
                         }
                     }
-                    category(copy);
+                    category(copy2);
                     break;
                 } else if (channelInput == "8"){
+                    vector<Node> copy2;
                     for(auto i = copy.begin(); i != copy.end(); i++)
                     {
-                        if(i->category != "People & Blogs")
+                        if(i->category == "People & Blogs")
                         {
-                            copy.erase(i);
+                            copy2.emplace_back(*i);
                         }
                     }
-                    category(copy);
+                    category(copy2);
                     break;
                 } else if (channelInput == "9"){
+                    vector<Node> copy2;
                     for(auto i = copy.begin(); i != copy.end(); i++)
                     {
-                        if(i->category != "Comedy")
+                        if(i->category == "Comedy")
                         {
-                            copy.erase(i);
+                            copy2.emplace_back(*i);
                         }
                     }
-                    category(copy);
+                    category(copy2);
                     break;
                 } else if (channelInput == "10"){
+                    vector<Node> copy2;
                     for(auto i = copy.begin(); i != copy.end(); i++)
                     {
-                        if(i->category != "Entertainment")
+                        if(i->category == "Entertainment")
                         {
-                            copy.erase(i);
+                            copy2.emplace_back(*i);
                         }
                     }
-                    category(copy);
+                    category(copy2);
                     break;
                 } else if (channelInput == "11"){
+                    vector<Node> copy2;
                     for(auto i = copy.begin(); i != copy.end(); i++)
                     {
-                        if(i->category != "News & Politics")
+                        if(i->category == "News & Politics")
                         {
-                            copy.erase(i);
+                            copy2.emplace_back(*i);
                         }
                     }
-                    category(copy);
+                    category(copy2);
                     break;
                 } else if (channelInput == "12"){
+                    vector<Node> copy2;
                     for(auto i = copy.begin(); i != copy.end(); i++)
                     {
-                        if(i->category != "Howto & Style")
+                        if(i->category == "Howto & Style")
                         {
-                            copy.erase(i);
+                            copy2.emplace_back(*i);
                         }
                     }
-                    category(copy);
+                    category(copy2);
                     break;
                 } else if (channelInput == "13"){
+                    vector<Node> copy2;
                     for(auto i = copy.begin(); i != copy.end(); i++)
                     {
-                        if(i->category != "Education")
+                        if(i->category == "Education")
                         {
-                            copy.erase(i);
+                            copy2.emplace_back(*i);
                         }
                     }
-                    category(copy);
+                    category(copy2);
                     break;
                 } else if (channelInput == "14"){
+                    vector<Node> copy2;
                     for(auto i = copy.begin(); i != copy.end(); i++)
                     {
-                        if(i->category != "Science & Technology")
+                        if(i->category == "Science & Technology")
                         {
-                            copy.erase(i);
+                            copy2.emplace_back(*i);
                         }
                     }
-                    category(copy);
+                    category(copy2);
                     break;
                 } else if (channelInput == "15"){
+                    vector<Node> copy2;
                     for(auto i = copy.begin(); i != copy.end(); i++)
                     {
-                        if(i->category != "Channel Trailer:")
+                        if(i->category =="Channel Trailer:")
                         {
-                            copy.erase(i);
+                            copy2.emplace_back(*i);
                         }
                     }
-                    category(copy);
+                    category(copy2);
                     break;
 
                 //goes back
